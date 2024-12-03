@@ -42,6 +42,13 @@ export interface LaborMetrics {
   peakHours: string[];
 }
 
+export interface Activity {
+  userName: string;
+  userAvatar: string;
+  action: string;
+  time: string;
+}
+
 export interface GlobalMarketData {
   region: string;
   marketSize: number;
