@@ -2,6 +2,7 @@ import React from 'react';
 import { StatCard } from '../Dashboard/StatCard';
 import { SalesChart } from '../Dashboard/SalesChart';
 import { RecentActivity } from '../Dashboard/RecentActivity';
+import { DataUpload } from '../DataManagement/DataUpload';
 import { Users, DollarSign, ShoppingCart, TrendingUp } from 'lucide-react';
 import { generateSalesData } from '../../utils/mockData';
 
@@ -35,6 +36,10 @@ export const DashboardView: React.FC = () => {
           change={2.1}
           icon={TrendingUp}
         />
+      </div>
+
+      <div className="mb-8">
+        <DataUpload />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

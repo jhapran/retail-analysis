@@ -7,9 +7,13 @@ import { AnalyticsView } from '../components/Views/AnalyticsView';
 import { AdminView } from '../components/Views/AdminView';
 import { CustomersView } from '../components/Views/CustomersView';
 import { ProductsView } from '../components/Views/ProductsView';
+import { MessagesView } from '../components/Views/MessagesView';
+import { SettingsView } from '../components/Views/SettingsView';
+import { HelpView } from '../components/Views/HelpView';
 
 export const Dashboard: React.FC = () => {
   const location = useLocation();
+  const [isExpanded, setIsExpanded] = React.useState(false);
   
   const getActiveView = () => {
     switch (location.pathname) {
@@ -21,18 +25,26 @@ export const Dashboard: React.FC = () => {
         return <CustomersView />;
       case '/products':
         return <ProductsView />;
+      case '/messages':
+        return <MessagesView />;
+      case '/settings':
+        return <SettingsView />;
+      case '/help':
+        return <HelpView />;
       default:
         return <DashboardView />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar />
-      <div className="ml-20 p-8">
-        <div className="max-w-[1600px] mx-auto">
-          <Header />
-          {getActiveView()}
+    <div className="min-h-screen bg-gray-50 flex">
+      <Sidebar isExpanded={isExpanded} onToggle={setIsExpanded} />
+      <div className={`flex-1 transition-all duration-300 ${isExpanded ? 'ml-64' : 'ml-20'}`}>
+        <div className="min-h-screen">
+          <div className="p-8 max-w-[1600px] mx-auto">
+            <Header />
+            {getActiveView()}
+          </div>
         </div>
       </div>
     </div>
