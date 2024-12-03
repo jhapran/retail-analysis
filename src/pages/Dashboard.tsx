@@ -4,7 +4,7 @@ import { Sidebar } from '../components/Layout/Sidebar';
 import { Header } from '../components/Dashboard/Header';
 import { DashboardView } from '../components/Views/DashboardView';
 import { AnalyticsView } from '../components/Views/AnalyticsView';
-import { AdminView } from '../components/Views/AdminView';
+import { DataManagementView } from '../components/Views/DataManagementView';
 import { CustomersView } from '../components/Views/CustomersView';
 import { ProductsView } from '../components/Views/ProductsView';
 import { MessagesView } from '../components/Views/MessagesView';
@@ -19,8 +19,8 @@ export const Dashboard: React.FC = () => {
     switch (location.pathname) {
       case '/analytics':
         return <AnalyticsView />;
-      case '/admin':
-        return <AdminView />;
+      case '/data-management':
+        return <DataManagementView />;
       case '/customers':
         return <CustomersView />;
       case '/products':

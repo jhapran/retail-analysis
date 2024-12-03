@@ -10,7 +10,8 @@ import {
   Bell,
   HelpCircle,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  Database
 } from 'lucide-react';
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+  { icon: Database, label: 'Data Management', path: '/data-management' },
   { icon: BarChart2, label: 'Analytics', path: '/analytics' },
   { icon: Users, label: 'Customers', path: '/customers' },
   { icon: ShoppingBag, label: 'Products', path: '/products' },

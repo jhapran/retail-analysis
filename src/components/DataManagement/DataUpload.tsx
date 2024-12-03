@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Database, FileText, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, Database, FileText, X, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
 
 interface UploadStatus {
   status: 'idle' | 'uploading' | 'success' | 'error';
@@ -26,73 +26,80 @@ export const DataUpload: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
-    const files = e.dataTransfer.files;
-    handleFiles(files);
-  };
 
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
+    const files = Array.from(e.dataTransfer.files);
+    if (files && files.length > 0) {
       handleFiles(files);
     }
   };
 
-  const handleFiles = (files: FileList) => {
-    setUploadStatus({ status: 'uploading' });
-    
-    // Simulate file upload
-    setTimeout(() => {
-      const validTypes = ['text/csv', 'application/json', 'application/vnd.ms-excel'];
-      const file = files[0];
-      
-      if (!validTypes.includes(file.type)) {
-        setUploadStatus({
-          status: 'error',
-          message: 'Invalid file type. Please upload CSV, JSON, or Excel files.'
-        });
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        setUploadStatus({
-          status: 'error',
-          message: 'File size exceeds 10MB limit.'
-        });
-        return;
-      }
-
-      setUploadStatus({
-        status: 'success',
-        message: `Successfully uploaded ${file.name}`
-      });
-    }, 1500);
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      handleFiles(files);
+    }
   };
 
-  const handleDbConnect = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFiles = (files: File[]) => {
+    setUploadStatus({ status: 'uploading', message: 'Uploading files...' });
+
+    // Simulate file upload
+    setTimeout(() => {
+      const validFiles = files.filter(file => {
+        const validExtensions = ['.csv', '.json', '.xlsx', '.xls'];
+        return validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+      });
+
+      if (validFiles.length === files.length) {
+        setUploadStatus({
+          status: 'success',
+          message: `Successfully uploaded ${files.length} file${files.length > 1 ? 's' : ''}`
+        });
+      } else {
+        setUploadStatus({
+          status: 'error',
+          message: 'Some files have invalid formats. Please upload CSV, JSON, or Excel files only.'
+        });
+      }
+    }, 2000);
+  };
+
+  const handleDbConnect = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
+    setUploadStatus({ status: 'uploading', message: 'Connecting to database...' });
+
     // Simulate database connection
-    setUploadStatus({ status: 'uploading' });
     setTimeout(() => {
       setUploadStatus({
         status: 'success',
-        message: `Successfully connected to database at ${formData.get('host')}`
+        message: 'Successfully connected to database'
       });
       setShowDbConnect(false);
-    }, 1500);
+    }, 2000);
   };
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="bg-blue-600 rounded-xl p-8">
+        <h2 className="text-3xl font-bold text-white mb-2">Data Management</h2>
+        <p className="text-blue-100 text-lg">Import your data through file upload or connect directly to your database.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* File Upload Section */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold mb-4">Upload Data</h3>
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <Upload className="h-6 w-6 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold">Upload Data Files</h3>
+          </div>
+          
           <div
-            className={`border-2 border-dashed rounded-xl p-8 text-center ${
-              dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+            className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
+              dragActive 
+                ? 'border-blue-500 bg-blue-50' 
+                : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -105,38 +112,47 @@ export const DataUpload: React.FC = () => {
               className="hidden"
               onChange={handleFileInput}
               accept=".csv,.json,.xlsx,.xls"
+              multiple
             />
             
-            <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-sm text-gray-600 mb-2">
-              Drag and drop your files here, or{' '}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                browse
-              </button>
+            <Upload className="mx-auto h-16 w-16 text-blue-500 mb-4" />
+            <p className="text-lg text-gray-600 mb-2">
+              Drag and drop your files here
             </p>
-            <p className="text-xs text-gray-500">
-              Supports CSV, JSON, and Excel files (max 10MB)
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+            >
+              Browse Files
+              <ArrowRight size={20} />
+            </button>
+            <p className="text-sm text-gray-500 mt-4">
+              Supports CSV, JSON, and Excel files
             </p>
           </div>
         </div>
 
         {/* Database Connection Section */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold mb-4">Connect Database</h3>
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <Database className="h-6 w-6 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold">Connect Database</h3>
+          </div>
+
           {!showDbConnect ? (
-            <div className="text-center">
-              <Database className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <p className="text-sm text-gray-600 mb-4">
-                Connect to your existing database to import data
+            <div className="text-center py-8">
+              <Database className="mx-auto h-16 w-16 text-blue-500 mb-6" />
+              <p className="text-lg text-gray-600 mb-6">
+                Connect directly to your existing database
               </p>
               <button
                 onClick={() => setShowDbConnect(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
               >
-                Connect Database
+                Connect Now
+                <ArrowRight size={20} />
               </button>
             </div>
           ) : (
@@ -202,7 +218,7 @@ export const DataUpload: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-end gap-4">
+              <div className="flex justify-end gap-4 mt-6">
                 <button
                   type="button"
                   onClick={() => setShowDbConnect(false)}
@@ -212,9 +228,10 @@ export const DataUpload: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
                 >
-                  Connect
+                  Connect Database
+                  <ArrowRight size={20} />
                 </button>
               </div>
             </form>
