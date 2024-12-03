@@ -16,24 +16,28 @@ export const DashboardView: React.FC = () => {
           value="$84,254"
           change={8.2}
           icon={DollarSign}
+          color="blue"
         />
         <StatCard
           title="Active Customers"
           value="2,420"
           change={12.5}
           icon={Users}
+          color="purple"
         />
         <StatCard
           title="Total Orders"
           value="1,210"
           change={-3.2}
           icon={ShoppingCart}
+          color="orange"
         />
         <StatCard
           title="Growth Rate"
           value="15.2%"
           change={2.1}
           icon={TrendingUp}
+          color="green"
         />
       </div>
 
