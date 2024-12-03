@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 export const CTA: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-800 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -11,7 +14,10 @@ export const CTA: React.FC = () => {
         <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
           Join thousands of retailers who are already using RetailAI Analytics to drive growth and efficiency.
         </p>
-        <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors inline-flex items-center gap-2">
+        <button 
+          onClick={() => navigate('/dashboard')}
+          className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors inline-flex items-center gap-2"
+        >
           Start Free Trial
           <ArrowRight size={20} />
         </button>
